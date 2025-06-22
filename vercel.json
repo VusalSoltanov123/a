@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/ilqar.m3u", "destination": "/api/redirect.js" }
+  ]
+}
