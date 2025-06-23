@@ -1,5 +1,5 @@
 {
   "rewrites": [
-    { "source": "/ilqar.m3u", "destination": "/api/redirect.js" }
+    { "source": "/vusal1993.m3u", "destination": "/api/redirect.js" }
   ]
 }
