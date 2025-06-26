@@ -1,30 +1,50 @@
-// Mərkəzi m3u faylının linki — hamı buraya yönlənəcək
-const centralUrl = "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K";
+const centralUrl = process.env.M3U_URL;
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-// İstifadəçi siyahısı — IP-lər ayrıca sayılır, fayl eynidir
-const users = {
-  vusal: { ipSet: new Set() },
-  rahim: { ipSet: new Set() }
-};
+// Sadəcə icazəli istifadəçilər
+const allowedUsers = ["vusal", "ilqar"];
 
-// IP limiti: 1 cihaz
-const maxIps = 1;
-
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const user = req.query.u;
-  const clientIp = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const clientIp = req.headers["x-forwarded-for"]?.split(",")[0] || req.connection.remoteAddress;
 
-  if (!user || !users[user]) {
-    return res.status(403).send("❌ İstifadəçi tapılmadı.");
+  if (!user || !allowedUsers.includes(user)) {
+    return res.status(403).send("❌ İstifadəçi tapılmadı və ya icazəsizdir.");
   }
 
-  const ipSet = users[user].ipSet;
-  ipSet.add(clientIp);
-
-  if (ipSet.size > maxIps) {
-    return res.status(403).send("❌ Limit keçildi. Link artıq başqa cihazda istifadə olunub.");
+  if (!centralUrl) {
+    return res.status(500).send("❌ M3U linki təyin edilməyib.");
   }
 
-  res.redirect(centralUrl);
+  const redisKey = `iptv_user_${user}`;
+
+  // Redis-dən IP-ni oxu
+  const response = await fetch(`${redisUrl}/get/${redisKey}`, {
+    headers: { Authorization: `Bearer ${redisToken}` }
+  });
+
+  const existingIp = await response.text();
+
+  // IP yoxdursa → yaz və yönləndir
+  if (!existingIp) {
+    await fetch(`${redisUrl}/set/${redisKey}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${redisToken}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ value: clientIp, EX: 31536000 }) // 365 gün
+    });
+
+    return res.redirect(centralUrl);
+  }
+
+  // Əgər IP eynidirsə → keç
+  if (existingIp === clientIp) {
+    return res.redirect(centralUrl);
+  }
+
+  // Başqa IP-dirsə → blok
+  return res.status(403).send("❌ Limit keçildi. Link artıq başqa cihazda istifadə olunub.");
 }
-
