@@ -8,11 +8,11 @@ const users = {
     ipSet: new Set()
   },
   rahim: {
-    url: "https://drive.google.com/uc?export=download&id=RAHIM_FILE_ID",
+    url: "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K",
     ipSet: new Set()
   },
   gunel: {
-    url: "https://drive.google.com/uc?export=download&id=GUNEL_FILE_ID",
+    url: "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K",
     ipSet: new Set()
   }
 };
