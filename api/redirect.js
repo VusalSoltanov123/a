@@ -1,23 +1,14 @@
+// Mərkəzi m3u faylının linki — hamı buraya yönlənəcək
+const centralUrl = "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K";
+
+// İstifadəçi siyahısı — IP-lər ayrıca sayılır, fayl eynidir
 const users = {
-  ilqar: {
-    url: "const users = {
-  ilqar: {
-    url: "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K",
-    ipSet: new Set()
-  },",
-    ipSet: new Set()
-  },
-  rahim: {
-    url: "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K",
-    ipSet: new Set()
-  },
-  gunel: {
-    url: "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7eCvauKIpsUgQ9VNyRB4K",
-    ipSet: new Set()
-  }
+  vusal: { ipSet: new Set() },
+  ilqar: { ipSet: new Set() },
+  rahim: { ipSet: new Set() }
 };
 
-// 💥 IP limiti burdadır
+// IP limiti: 1 cihaz
 const maxIps = 1;
 
 export default function handler(req, res) {
@@ -35,5 +26,6 @@ export default function handler(req, res) {
     return res.status(403).send("❌ Limit keçildi. Link artıq başqa cihazda istifadə olunub.");
   }
 
-  res.redirect(users[user].url);
+  res.redirect(centralUrl);
 }
+
