@@ -4,7 +4,6 @@ const centralUrl = "https://drive.google.com/uc?export=download&id=17Yph188VjzZ7
 // İstifadəçi siyahısı — IP-lər ayrıca sayılır, fayl eynidir
 const users = {
   vusal: { ipSet: new Set() },
-  ilqar: { ipSet: new Set() },
   rahim: { ipSet: new Set() }
 };
 
